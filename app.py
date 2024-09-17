@@ -2,15 +2,16 @@ import streamlit as st
 import subprocess
 from set import load_codes
 
-# 암호 코드 로드
-codes = load_codes()
-user_code = codes["user_code"]
-admin_code = codes["admin_code"]
 
 st.set_page_config(
     page_title="EduMakers Code page",
     page_icon="favicon.png",
 )
+
+# 암호 코드 로드
+codes = load_codes()
+user_code = codes["user_code"]
+admin_code = codes["admin_code"]
 
 st.title("에듀메이커스 Chat GPT")
 
