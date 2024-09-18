@@ -24,13 +24,15 @@ if submit_button:
     # 내가 코드 입력했음을 알리기 위한 메시지
     st.success("코드가 입력되었습니다. 필요한 페이지로 이동합니다.")
     
-    # 코드에 따라 페이지 실행
+    if secret_code:
     if secret_code == admin_code:
-        st.markdown("[관리자 페이지로 이동](https://edmakers-selectmode.streamlit.app/)")
+        st.success("관리자 코드가 확인되었습니다. 관리자 페이지로 이동합니다.")
+        st.markdown(f'<meta http-equiv="refresh" content="0;url=https://edmakers-selectmode.streamlit.app/">', unsafe_allow_html=True)
     elif secret_code == user_code:
-        st.markdown("[GPT 페이지로 이동](https://edmakers-gpt.streamlit.app/)")
+        st.success("사용자 코드가 확인되었습니다. GPT 페이지로 이동합니다.")
+        st.markdown(f'<meta http-equiv="refresh" content="0;url=https://edmakers-gpt.streamlit.app/">', unsafe_allow_html=True)
     else:
-        st.error("잘못된 코드입니다.")  # 잘못된 코드일 경우 오류 메시지 출력
+        st.error("잘못된 코드입니다.")
 
 # 이미지를 중앙에 배치
 col1, col2, col3 = st.columns([2,2,1])
