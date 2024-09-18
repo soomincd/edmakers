@@ -63,7 +63,7 @@ with st.container():
     with col2:
         if st.button("이동", key="gpt_move"):
             st.success("GPT-4o-mini")  # 페이지 이동 피드백
-            subprocess.Popen(["streamlit", "run", "new.py"]) 
+            st.markdown("[GPT 페이지로 이동](https://edmakers-gpt.streamlit.app/)")
 
 # 관리자 모드
 with st.container():
@@ -82,7 +82,7 @@ with st.container():
     with col2:
         if st.button("이동", key="admin_move"):
             st.success("관리자 모드")  # 페이지 이동 피드백
-            subprocess.Popen(["streamlit", "run", "gov.py"])  
+            st.markdown("[관리자 페이지로 이동](https://edmakers-managelog.streamlit.app/)")
 
 # 계정 생성 페이지
 with st.container():
@@ -101,8 +101,7 @@ with st.container():
     with col2:
         if st.button("이동", key="signup_move"):
             st.success("계정 생성") 
-            subprocess.Popen(["streamlit", "run", "ma.py"])
-
+            st.markdown("[계정 생성 페이지로 이동](https://edmakers-makelog.streamlit.app/)")
 # 암호코드 변경
 with st.container():
     col1, col2 = st.columns([5, 1]) 
@@ -120,4 +119,4 @@ with st.container():
     with col2:
         if st.button("이동", key="code_make"):
             st.success("암호 변경") 
-            subprocess.Popen(["streamlit", "run", "set.py"])
+            st.markdown("[암호 코드 변경 페이지로 이동](https://edmakers-makecode.streamlit.app/)")
