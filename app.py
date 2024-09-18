@@ -11,12 +11,7 @@ st.set_page_config(
 codes = load_codes()
 user_code = codes["user_code"]
 admin_code = codes["admin_code"]
-
-# 이미지를 중앙에 배치
-col1, col2, col3 = st.columns([1,2,1])
-with col2:
-    st.image("favicon.png", width=200)
-    
+   
 # 중앙 정렬된 제목
 st.markdown("<h1 style='text-align: center;'>에듀메이커스 Chat GPT</h1>", unsafe_allow_html=True)
 
@@ -36,3 +31,9 @@ if submit_button:
         subprocess.Popen(["streamlit", "run", "new.py"])  # 사용자 페이지 실행
     else:
         st.error("잘못된 코드입니다.")  # 잘못된 코드일 경우 오류 메시지 출력
+
+# 이미지를 중앙에 배치
+col1, col2, col3 = st.columns([1,2,1])
+with col2:
+    st.image("favicon.png", width=200)
+ 
