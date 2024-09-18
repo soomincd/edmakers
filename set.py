@@ -2,7 +2,7 @@ import json
 import streamlit as st
 
 st.set_page_config(
-    page_title="EduMakers Code page",
+    page_title="EdMakers GPT",
     page_icon="favicon.png",
 )
 # 암호 코드를 저장하는 함수
