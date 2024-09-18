@@ -32,4 +32,4 @@ with st.form(key='login_form'):
         else:
             st.error("잘못된 코드입니다.")  # 잘못된 코드일 경우 오류 메시지 출력
 
-st.image("favicon.png", caption="EduMakers Logo")
+st.image("favicon.png", caption="EdMakers Logo")
