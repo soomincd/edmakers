@@ -3,7 +3,7 @@ import sqlite3
 import hashlib
 
 st.set_page_config(
-    page_title="EduMakers Code page",
+    page_title="EdMakers GPT",
     page_icon="favicon.png",
 )
 
