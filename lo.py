@@ -59,9 +59,7 @@ def main():
         message, expiry_date = login_user(username, password)
         if message == "로그인 성공":
             st.success("올바른 코드입니다. 관리자 페이지로 이동합니다.")
-            # new.py 실행 (관리자 페이지)
-            subprocess.Popen(["streamlit", "run", "new.py"])
-            st.stop()
+            st.markdown("[GPT 페이지로 이동](https://edmakers-gpt.streamlit.app/)")
         else:
             st.error(message)
 
