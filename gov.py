@@ -3,7 +3,7 @@ import sqlite3
 import hashlib
 
 st.set_page_config(
-    page_title="EdMakers GPT",
+    page_title="EdMakers Code page",
     page_icon="favicon.png",
 )
 
@@ -16,7 +16,8 @@ c.execute('''
     CREATE TABLE IF NOT EXISTS users
     (id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL)
+    password_hash TEXT NOT NULL,
+    expiry_date TEXT)
 ''')
 conn.commit()
 
@@ -25,7 +26,7 @@ def make_hashes(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
 
 def get_users():
-    c.execute("SELECT id, username, password_hash FROM users")
+    c.execute("SELECT id, username, password_hash, expiry_date FROM users")
     return c.fetchall()
 
 def delete_user(user_id):
@@ -36,11 +37,12 @@ def delete_user(user_id):
 def add_test_user(username, password):
     password_hash = make_hashes(password)
     try:
-        c.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, password_hash))
+        c.execute("INSERT INTO users (username, password_hash, expiry_date) VALUES (?, ?, ?)", 
+                  (username, password_hash, "2025-12-31 23:59:59.999999"))
         conn.commit()
         return True
     except sqlite3.IntegrityError:
-        return False  
+        return False
 
 def main():
     st.title("관리자 페이지")
@@ -56,7 +58,7 @@ def main():
     users = get_users()
     if users:
         for user in users:
-            user_id, username, password_hash = user
+            user_id, username, password_hash, expiry_date = user
             # 사용자 정보 표시
             col1, col2 = st.columns([5, 1])  # 삭제 버튼의 공간을 오른쪽 끝에 배치
             with col1:
@@ -64,6 +66,7 @@ def main():
                 <div style="background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
                 <div>ID: {username}</div>
                 <div>Password Hash: {password_hash}</div>
+                <div>Expiry Date: {expiry_date}</div>
                 </div>
                 ''', unsafe_allow_html=True)
             with col2:
