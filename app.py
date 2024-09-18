@@ -13,7 +13,7 @@ codes = load_codes()
 user_code = codes["user_code"]
 admin_code = codes["admin_code"]
 
-st.title("에듀메이커스 Chat GPT")
+st.markdown("<h1 style='text-align: center;'>에듀메이커스 Chat GPT</h1>", unsafe_allow_html=True)
 
 # 로그인 폼
 with st.form(key='login_form'):
