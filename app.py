@@ -11,23 +11,46 @@ codes = load_codes()
 user_code = codes["user_code"]
 admin_code = codes["admin_code"]
 
+# 세션 상태 초기화
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+    st.session_state.user_type = None
+
+def authenticate(code):
+    if code == admin_code:
+        st.session_state.authenticated = True
+        st.session_state.user_type = 'admin'
+        return True
+    elif code == user_code:
+        st.session_state.authenticated = True
+        st.session_state.user_type = 'user'
+        return True
+    return False
+
 st.markdown("<h1 style='text-align: center;'>에듀메이커스 Chat GPT</h1>", unsafe_allow_html=True)
 
-# 로그인 폼
-with st.form(key='login_form'):
-    secret_code = st.text_input("암호 코드를 입력하세요:", type="password")
-    submit_button = st.form_submit_button("확인")
+if not st.session_state.authenticated:
+    with st.form(key='login_form'):
+        secret_code = st.text_input("암호 코드를 입력하세요:", type="password")
+        submit_button = st.form_submit_button("확인")
 
-# 폼 제출 처리 (버튼 클릭 또는 엔터 키)
-if submit_button or secret_code:  # 버튼 클릭 또는 엔터 키 입력
-    if secret_code == admin_code:
+    if submit_button:
+        if authenticate(secret_code):
+            st.experimental_rerun()
+        else:
+            st.error("잘못된 코드입니다.")
+else:
+    if st.session_state.user_type == 'admin':
         st.success("관리자 코드가 확인되었습니다. 관리자 페이지로 이동합니다.")
         st.markdown("[관리자 페이지로 이동](https://edmakers-selectmode.streamlit.app/)")
-    elif secret_code == user_code:
+    elif st.session_state.user_type == 'user':
         st.success("사용자 코드가 확인되었습니다. GPT 페이지로 이동합니다.")
         st.markdown("[GPT 페이지로 이동](https://edmakers-gpt.streamlit.app/)")
-    else:
-        st.error("잘못된 코드입니다.")
+
+    if st.button("로그아웃"):
+        st.session_state.authenticated = False
+        st.session_state.user_type = None
+        st.experimental_rerun()
 
 # 페이지 하단에 이미지 추가
 st.image("favicon.png", caption="EduMakers Logo")
