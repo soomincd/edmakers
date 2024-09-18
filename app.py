@@ -1,9 +1,8 @@
 import streamlit as st
-import subprocess
 from set import load_codes
 
 st.set_page_config(
-    page_title="EdMakers GPT",
+    page_title="EduMakers Code page",
     page_icon="favicon.png",
 )
 
@@ -11,20 +10,14 @@ st.set_page_config(
 codes = load_codes()
 user_code = codes["user_code"]
 admin_code = codes["admin_code"]
-   
-# 중앙 정렬된 제목
+
 st.markdown("<h1 style='text-align: center;'>에듀메이커스 Chat GPT</h1>", unsafe_allow_html=True)
 
-# 로그인 폼
-with st.form(key='login_form'):
-    secret_code = st.text_input("암호 코드를 입력하세요:", type="password")
-    submit_button = st.form_submit_button("확인")
+# 코드 입력
+secret_code = st.text_input("암호 코드를 입력하세요:", type="password")
 
-if submit_button:
-    # 내가 코드 입력했음을 알리기 위한 메시지
-    st.success("코드가 입력되었습니다. 필요한 페이지로 이동합니다.")
-    
-    if secret_code:
+# 코드 검증 및 리디렉션
+if secret_code:
     if secret_code == admin_code:
         st.success("관리자 코드가 확인되었습니다. 관리자 페이지로 이동합니다.")
         st.markdown(f'<meta http-equiv="refresh" content="0;url=https://edmakers-selectmode.streamlit.app/">', unsafe_allow_html=True)
@@ -34,8 +27,5 @@ if submit_button:
     else:
         st.error("잘못된 코드입니다.")
 
-# 이미지를 중앙에 배치
-col1, col2, col3 = st.columns([2,2,1])
-with col2:
-    st.image("favicon.png", width=200)
- 
+# 페이지 하단에 이미지 추가
+st.image("favicon.png", caption="EduMakers Logo")
