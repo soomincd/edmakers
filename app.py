@@ -31,3 +31,5 @@ with st.form(key='login_form'):
             subprocess.Popen(["streamlit", "run", "new.py"])  # 사용자 페이지 실행
         else:
             st.error("잘못된 코드입니다.")  # 잘못된 코드일 경우 오류 메시지 출력
+
+st.image("favicon.png", caption="EduMakers Logo")
