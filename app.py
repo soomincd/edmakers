@@ -1,8 +1,9 @@
 import streamlit as st
+import subprocess
 from set import load_codes
 
 st.set_page_config(
-    page_title="EduMakers Code page",
+    page_title="EdMakers Code page",
     page_icon="favicon.png",
 )
 
@@ -11,46 +12,25 @@ codes = load_codes()
 user_code = codes["user_code"]
 admin_code = codes["admin_code"]
 
-# 세션 상태 초기화
-if 'authenticated' not in st.session_state:
-    st.session_state.authenticated = False
-    st.session_state.user_type = None
-
-def authenticate(code):
-    if code == admin_code:
-        st.session_state.authenticated = True
-        st.session_state.user_type = 'admin'
-        return True
-    elif code == user_code:
-        st.session_state.authenticated = True
-        st.session_state.user_type = 'user'
-        return True
-    return False
-
 st.markdown("<h1 style='text-align: center;'>에듀메이커스 Chat GPT</h1>", unsafe_allow_html=True)
 
-if not st.session_state.authenticated:
-    with st.form(key='login_form'):
-        secret_code = st.text_input("암호 코드를 입력하세요:", type="password")
-        submit_button = st.form_submit_button("확인")
+# 로그인 폼
+with st.form(key='login_form'):
+    secret_code = st.text_input("암호 코드를 입력하세요:", type="password")
+    submit_button = st.form_submit_button("확인")
 
-    if submit_button:
-        if authenticate(secret_code):
-            st.experimental_rerun()
-        else:
-            st.error("잘못된 코드입니다.")
-else:
-    if st.session_state.user_type == 'admin':
+if submit_button:
+    # 내가 코드 입력했음을 알리기 위한 메시지
+    st.success("코드가 입력되었습니다. 필요한 페이지로 이동합니다.")
+    
+   if secret_code == admin_code:
         st.success("관리자 코드가 확인되었습니다. 관리자 페이지로 이동합니다.")
         st.markdown("[관리자 페이지로 이동](https://edmakers-selectmode.streamlit.app/)")
-    elif st.session_state.user_type == 'user':
+    elif secret_code == user_code:
         st.success("사용자 코드가 확인되었습니다. GPT 페이지로 이동합니다.")
         st.markdown("[GPT 페이지로 이동](https://edmakers-gpt.streamlit.app/)")
-
-    if st.button("로그아웃"):
-        st.session_state.authenticated = False
-        st.session_state.user_type = None
-        st.experimental_rerun()
+    else:
+        st.error("잘못된 코드입니다.") # 잘못된 코드일 경우 오류 메시지 출력
 
 # 페이지 하단에 이미지 추가
-st.image("favicon.png", caption="EduMakers Logo")
+st.image("favicon.png", caption="EduMakers Logo", width=200)
