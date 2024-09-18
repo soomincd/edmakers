@@ -4,7 +4,7 @@ from datetime import datetime
 import sqlite3
 
 st.set_page_config(
-    page_title="EduMakers Code page",
+    page_title="EdMakers Code page",
     page_icon="favicon.png",
 )
 
