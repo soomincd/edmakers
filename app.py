@@ -26,9 +26,9 @@ if submit_button:
     
     # 코드에 따라 페이지 실행
     if secret_code == admin_code:
-        subprocess.Popen(["streamlit", "run", "cod.py"])  # 관리자 페이지 실행
+        st.markdown("[관리자 페이지로 이동](https://edmakers-selectmode.streamlit.app/)")
     elif secret_code == user_code:
-        subprocess.Popen(["streamlit", "run", "new.py"])  # 사용자 페이지 실행
+        st.markdown("[GPT 페이지로 이동](https://edmakers-gpt.streamlit.app/)")
     else:
         st.error("잘못된 코드입니다.")  # 잘못된 코드일 경우 오류 메시지 출력
 
