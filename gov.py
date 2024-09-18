@@ -1,47 +1,58 @@
 import streamlit as st
 import sqlite3
 import hashlib
+import os
 
-# SQLite 데이터베이스 연결
-conn = sqlite3.connect('users.db', check_same_thread=False)
-c = conn.cursor()
-
-# 테이블 구조 업데이트
-def update_table_structure():
+# 데이터베이스 초기화 함수
+def init_db():
+    db_path = 'users.db'
+    
+    # 기존 데이터베이스 파일이 존재하면 삭제
+    if os.path.exists(db_path):
+        os.remove(db_path)
+    
+    conn = sqlite3.connect(db_path, check_same_thread=False)
+    c = conn.cursor()
+    
+    # users 테이블 생성
     c.execute('''
-    CREATE TABLE IF NOT EXISTS users_new
+    CREATE TABLE IF NOT EXISTS users
     (id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     expiry_date TEXT)
     ''')
     
-    # 기존 데이터 복사
-    c.execute('''
-    INSERT INTO users_new (id, username, password_hash)
-    SELECT id, username, password_hash FROM users
-    ''')
-    
-    # 기존 테이블 삭제 및 새 테이블 이름 변경
-    c.execute('DROP TABLE IF EXISTS users')
-    c.execute('ALTER TABLE users_new RENAME TO users')
-    
     conn.commit()
+    return conn, c
 
-# 앱 시작 시 테이블 구조 업데이트
-update_table_structure()
+# 전역 변수로 연결 객체 설정
+try:
+    conn, c = init_db()
+except sqlite3.Error as e:
+    st.error(f"데이터베이스 초기화 중 오류 발생: {e}")
+    st.stop()
 
 # 비밀번호 해시화 함수
 def make_hashes(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
 
 def get_users():
-    c.execute("SELECT id, username, password_hash, expiry_date FROM users")
-    return c.fetchall()
+    try:
+        c.execute("SELECT id, username, password_hash, expiry_date FROM users")
+        return c.fetchall()
+    except sqlite3.Error as e:
+        st.error(f"사용자 정보 조회 중 오류 발생: {e}")
+        return []
 
 def delete_user(user_id):
-    c.execute("DELETE FROM users WHERE id = ?", (user_id,))
-    conn.commit()
+    try:
+        c.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        st.error(f"사용자 삭제 중 오류 발생: {e}")
+        return False
 
 # 테스트용 사용자 추가 함수
 def add_test_user(username, password):
@@ -53,6 +64,9 @@ def add_test_user(username, password):
         return True
     except sqlite3.IntegrityError:
         return False
+    except sqlite3.Error as e:
+        st.error(f"테스트 사용자 추가 중 오류 발생: {e}")
+        return False
 
 def main():
     st.title("관리자 페이지")
@@ -62,7 +76,7 @@ def main():
         if add_test_user("testuser", "password123"):
             st.success("테스트 사용자가 추가되었습니다.")
         else:
-            st.warning("테스트 사용자가 이미 존재합니다.")
+            st.warning("테스트 사용자 추가에 실패했습니다.")
 
     # 사용자 목록 표시
     users = get_users()
@@ -81,11 +95,13 @@ def main():
                 ''', unsafe_allow_html=True)
             with col2:
                 if st.button(f"삭제", key=f"delete_{user_id}"):
-                    delete_user(user_id)
-                    st.success(f"{username} 계정이 삭제되었습니다.")
-                    st.experimental_rerun()
+                    if delete_user(user_id):
+                        st.success(f"{username} 계정이 삭제되었습니다.")
+                        st.experimental_rerun()
+                    else:
+                        st.error(f"{username} 계정 삭제에 실패했습니다.")
     else:
-        st.write("등록된 회원이 없습니다.")
+        st.write("등록된 회원이 없거나 데이터를 불러오는 데 문제가 발생했습니다.")
 
 if __name__ == '__main__':
     main()
