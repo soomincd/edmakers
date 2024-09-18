@@ -2,7 +2,7 @@ import streamlit as st
 import subprocess  # subprocess 모듈을 임포트합니다.
 
 st.set_page_config(
-    page_title="EduMakers Code page",
+    page_title="EdMakers GPT",
     page_icon="favicon.png",
 )
 
