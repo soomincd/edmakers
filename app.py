@@ -4,7 +4,7 @@ from set import load_codes
 
 
 st.set_page_config(
-    page_title="EduMakers Code page",
+    page_title="EdMakers GPT",
     page_icon="favicon.png",
 )
 
