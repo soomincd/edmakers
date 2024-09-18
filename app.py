@@ -8,6 +8,8 @@ st.set_page_config(
     page_icon="favicon.png",
 )
 
+st.image("favicon.png", width=200)
+
 # 암호 코드 로드
 codes = load_codes()
 user_code = codes["user_code"]
@@ -32,4 +34,4 @@ with st.form(key='login_form'):
         else:
             st.error("잘못된 코드입니다.")  # 잘못된 코드일 경우 오류 메시지 출력
 
-st.image("favicon.png", width=400)
+
