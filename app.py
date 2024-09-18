@@ -12,13 +12,13 @@ codes = load_codes()
 user_code = codes["user_code"]
 admin_code = codes["admin_code"]
 
-# 중앙 정렬된 제목
-st.markdown("<h1 style='text-align: center;'>에듀메이커스 Chat GPT</h1>", unsafe_allow_html=True)
-
 # 이미지를 중앙에 배치
 col1, col2, col3 = st.columns([1,2,1])
 with col2:
     st.image("favicon.png", width=200)
+    
+# 중앙 정렬된 제목
+st.markdown("<h1 style='text-align: center;'>에듀메이커스 Chat GPT</h1>", unsafe_allow_html=True)
 
 # 로그인 폼
 with st.form(key='login_form'):
