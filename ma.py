@@ -4,7 +4,7 @@ from datetime import datetime
 import sqlite3
 
 st.set_page_config(
-    page_title="EdMakers GPT",
+    page_title="EduMakers Code page",
     page_icon="favicon.png",
 )
 
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE,
     password_hash TEXT,
-    expiry_date DATE
+    expiry_date TEXT
 )
 ''')
 conn.commit()
@@ -30,13 +30,13 @@ def make_hashes(password):
 # 사용자 등록 함수
 def add_user(username, password, expiry_date):
     password_hash = make_hashes(password)
-    c.execute("INSERT INTO users (username, password_hash, expiry_date) VALUES (?, ?, ?)", 
-            (username, password_hash, expiry_date))
+    expiry_date_str = expiry_date.strftime("%Y-%m-%d %H:%M:%S.%f")
+    c.execute("INSERT INTO users (username, password_hash, expiry_date) VALUES (?, ?, ?)",
+              (username, password_hash, expiry_date_str))
     conn.commit()
 
 def main():
     st.title("회원가입 페이지")
-
     new_user = st.text_input("새 사용자 이름")
     new_password = st.text_input("새 비밀번호", type='password')
     expiry_date = st.date_input("계정 만료일 선택", value=datetime.now())
@@ -48,7 +48,6 @@ def main():
         else:
             add_user(new_user, new_password, expiry_date)
             st.success("계정이 생성되었습니다.")
-            st.info("로그인 페이지로 이동하세요.")
 
 if __name__ == '__main__':
     main()
