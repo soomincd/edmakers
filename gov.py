@@ -3,7 +3,7 @@ import sqlite3
 import hashlib
 
 st.set_page_config(
-    page_title="EdMakers Code page",
+    page_title="EduMakers Code page",
     page_icon="favicon.png",
 )
 
@@ -26,12 +26,21 @@ def make_hashes(password):
     return hashlib.sha256(str.encode(password)).hexdigest()
 
 def get_users():
-    c.execute("SELECT id, username, password_hash, expiry_date FROM users")
-    return c.fetchall()
+    try:
+        c.execute("SELECT id, username, password_hash, expiry_date FROM users")
+        return c.fetchall()
+    except sqlite3.OperationalError as e:
+        st.error(f"데이터베이스 오류: {e}")
+        return []
 
 def delete_user(user_id):
-    c.execute("DELETE FROM users WHERE id = ?", (user_id,))
-    conn.commit()
+    try:
+        c.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        st.error(f"사용자 삭제 중 오류 발생: {e}")
+        return False
 
 # 테스트용 사용자 추가 함수
 def add_test_user(username, password):
@@ -43,6 +52,9 @@ def add_test_user(username, password):
         return True
     except sqlite3.IntegrityError:
         return False
+    except sqlite3.Error as e:
+        st.error(f"테스트 사용자 추가 중 오류 발생: {e}")
+        return False
 
 def main():
     st.title("관리자 페이지")
@@ -52,7 +64,7 @@ def main():
         if add_test_user("testuser", "password123"):
             st.success("테스트 사용자가 추가되었습니다.")
         else:
-            st.warning("테스트 사용자가 이미 존재합니다.")
+            st.warning("테스트 사용자 추가에 실패했습니다.")
 
     # 사용자 목록 표시
     users = get_users()
@@ -71,11 +83,13 @@ def main():
                 ''', unsafe_allow_html=True)
             with col2:
                 if st.button(f"삭제", key=f"delete_{user_id}"):
-                    delete_user(user_id)
-                    st.success(f"{username} 계정이 삭제되었습니다.")
-                    st.experimental_rerun()  # 페이지 새로고침
+                    if delete_user(user_id):
+                        st.success(f"{username} 계정이 삭제되었습니다.")
+                        st.experimental_rerun()  # 페이지 새로고침
+                    else:
+                        st.error(f"{username} 계정 삭제에 실패했습니다.")
     else:
-        st.write("등록된 회원이 없습니다.")
+        st.write("등록된 회원이 없거나 데이터를 불러오는 데 문제가 발생했습니다.")
 
 if __name__ == '__main__':
     main()
