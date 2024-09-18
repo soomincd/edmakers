@@ -33,7 +33,7 @@ if submit_button:
         st.error("잘못된 코드입니다.")  # 잘못된 코드일 경우 오류 메시지 출력
 
 # 이미지를 중앙에 배치
-col1, col2, col3 = st.columns([1,2,1])
+col1, col2, col3 = st.columns([2,2,1])
 with col2:
     st.image("favicon.png", width=200)
  
