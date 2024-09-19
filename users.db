@@ -1,13 +1,1 @@
-import sqlite3
-import os
 
-# 현재 디렉토리에 users.db 파일 생성
-db_path = os.path.join(os.path.dirname(__file__), 'users.db')
-
-# 데이터베이스 연결 (파일이 없으면 새로 생성됨)
-conn = sqlite3.connect(db_path)
-
-# 연결 종료
-conn.close()
-
-print(f"빈 users.db 파일이 생성되었습니다: {db_path}")
