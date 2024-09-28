@@ -8,8 +8,9 @@ import io
 api_key = st.secrets["OPENAI_API_KEY"]
 client = OpenAI(api_key=api_key)
 
+# 페이지 설정
 st.set_page_config(
-    page_title="EdMakers GPT",
+    page_title="EdMakers Code page",
     page_icon="favicon.png",
 )
 
