@@ -67,21 +67,18 @@ if prompt:
     # OpenAI API 요청
     # OpenAI API 요청
 try:
-    # 이전의 모든 메시지와 새 메시지를 포함하는 리스트 생성
-    all_messages = [{"role": "system", "content": "You are a helpful assistant."}]
-    all_messages.extend(st.session_state.messages)
-    all_messages.append({"role": "user", "content": full_prompt})
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": full_prompt}
+            ]
+        )
+        generated_response = response.choices[0].message.content
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=all_messages
-    )
-    generated_response = response.choices[0].message.content
-    # OpenAI의 응답을 그대로 표시
-    st.session_state.messages.append({"role": "assistant", "content": generated_response})
+        # OpenAI의 응답을 그대로 표시
+        st.session_state.messages.append({"role": "assistant", "content": generated_response})
 
-    # 파일 내용 초기화
-    st.session_state.file_contents = []
 except Exception as e:
     st.error(f"오류가 발생했습니다: {str(e)}")
 
