@@ -54,30 +54,31 @@ if uploaded_files:
 prompt = st.chat_input("메시지 ChatGPT")
 
 if prompt:
-    # 사용자 메시지 추가
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
     # 파일 내용이 있을 경우 OpenAI에 전송 (화면에 표시하지 않음)
-    file_content = '\n'.join(st.session_state.file_contents)
-    if file_content:
+    if st.session_state.file_contents:
+        file_content = '\n'.join(st.session_state.file_contents)
         full_prompt = f"여기에 첨부된 데이터:\n{file_content}\n\n사용자 메시지: {prompt}"
     else:
         full_prompt = prompt
 
+    # 사용자 메시지 표시 (화면에 표시)
+    st.session_state.messages.append({"role": "user", "content": full_prompt})
+
     # OpenAI API 요청
     try:
+        # 대화 컨텍스트를 포함하기
+        messages_to_send = [{"role": msg["role"], "content": msg["content"]} for msg in st.session_state.messages]
+
+        # OpenAI API 요청
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[{"role": "system", "content": "You are a helpful assistant. 사용자의 여태까지 대화는 다음과 같습니다: "}
-                      ] + st.session_state.messages + [{"role": "user", "content": full_prompt}]
+            messages=messages_to_send + [{"role": "user", "content": prompt}]
         )
         generated_response = response.choices[0].message.content
 
-        # OpenAI의 응답을 메시지로 추가하고 출력
+        # OpenAI의 응답을 그대로 표시
         st.session_state.messages.append({"role": "assistant", "content": generated_response})
 
-        # 파일 내용 초기화
-        st.session_state.file_contents = []
     except Exception as e:
         st.error(f"오류가 발생했습니다: {str(e)}")
 
